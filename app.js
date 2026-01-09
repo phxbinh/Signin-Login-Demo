@@ -70,6 +70,17 @@ function AuthPage() {
     navigateTo("/auth");
   };
 
+const handleForgotPassword = async () => {
+  if (!email) return alert("Nhập email trước");
+
+  const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/reset-password"
+  });
+
+  if (error) alert(error.message);
+  else alert("📩 Đã gửi email đặt lại mật khẩu");
+};
+
   // Nếu đã đăng nhập → chuyển sang Dashboard
   if (user) {
     return h("div", { style: { padding: "2rem", textAlign: "center" } },
@@ -145,7 +156,19 @@ function AuthPage() {
           href: "#",
           onClick: (e) => { e.preventDefault(); setIsLogin(!isLogin); }
         }, isLogin ? "Đăng ký ngay" : "Đăng nhập")
-      )
+      ),
+
+// Thêm quên mật khẩu
+h("p", { style: { textAlign: "center" } },
+  h("a", {
+    href: "#",
+    onClick: (e) => {
+      e.preventDefault();
+      handleForgotPassword();
+    }
+  }, "Quên mật khẩu?")
+)
+
     )
   );
 }
