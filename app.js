@@ -317,7 +317,7 @@ function Dashboard() {
     h("h1", null, "Dashboard"),
     h("p", null, user ? `Xin chào ${user.email}` : "Đang tải..."),
 
-    h(ChangePassword), // 👈 gắn tại đây
+    user && h(ChangePassword), // 👈 gắn tại đây
 
     h("button", {
       onClick: handleSignOut,
