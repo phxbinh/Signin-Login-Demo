@@ -246,6 +246,54 @@ function ChangePassword() {
 
 
 
+// ====================
+// Reset Password
+// ====================
+function ResetPasswordPage() {
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
+
+  const handleReset = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setMsg("");
+
+    try {
+      const { error } = await window.supabase.auth.updateUser({
+        password
+      });
+      if (error) throw error;
+
+      setMsg("✅ Đặt lại mật khẩu thành công");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return h("div", { style: { padding: "2rem", maxWidth: "400px", margin: "auto" } },
+    h("h2", null, "Đặt lại mật khẩu"),
+    error && h("p", { style: { color: "red" } }, error),
+    msg && h("p", { style: { color: "green" } }, msg),
+    h("form", { onSubmit: handleReset },
+      h("input", {
+        type: "password",
+        required: true,
+        minLength: 6,
+        value: password,
+        onInput: e => setPassword(e.target.value),
+        placeholder: "Mật khẩu mới",
+        style: { width: "100%", padding: "0.5rem", marginBottom: "1rem" }
+      }),
+      h("button", { disabled: loading }, loading ? "Đang xử lý..." : "Xác nhận")
+    )
+  );
+}
+
 
 
 // ====================
@@ -299,6 +347,7 @@ function Home() {
 window.App.Router.addRoute("/", Home);
 window.App.Router.addRoute("/auth", AuthPage);
 window.App.Router.addRoute("/dashboard", Dashboard);
+window.App.Router.addRoute("/reset-password", ResetPasswordPage);
 
 // Navbar đơn giản
 window.App.Router.navbarDynamic({
