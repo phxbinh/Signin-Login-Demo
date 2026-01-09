@@ -150,6 +150,81 @@ function AuthPage() {
   );
 }
 
+
+// ====================
+// Change Password Component
+// ====================
+function ChangePassword() {
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const { error } = await window.supabase.auth.updateUser({
+        password
+      });
+      if (error) throw error;
+
+      setMessage("✅ Đổi mật khẩu thành công");
+      setPassword("");
+    } catch (err) {
+      setError(err.message || "Đổi mật khẩu thất bại");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return h("div", {
+    style: {
+      maxWidth: "400px",
+      margin: "2rem auto",
+      padding: "1.5rem",
+      border: "1px solid #ddd",
+      borderRadius: "8px"
+    }
+  },
+    h("h3", null, "Đổi mật khẩu"),
+    error && h("p", { style: { color: "red" } }, error),
+    message && h("p", { style: { color: "green" } }, message),
+
+    h("form", { onSubmit: handleChangePassword },
+      h("input", {
+        type: "password",
+        placeholder: "Mật khẩu mới (>= 6 ký tự)",
+        required: true,
+        minLength: 6,
+        disabled: loading,
+        value: password,
+        onInput: (e) => setPassword(e.target.value),
+        style: { width: "100%", padding: "0.5rem", marginBottom: "1rem" }
+      }),
+      h("button", {
+        type: "submit",
+        disabled: loading,
+        style: {
+          width: "100%",
+          padding: "0.6rem",
+          background: "#0066ff",
+          color: "#fff",
+          border: "none",
+          borderRadius: "4px"
+        }
+      }, loading ? "Đang đổi..." : "Đổi mật khẩu")
+    )
+  );
+}
+
+
+
+
+
 // ====================
 // Dashboard (sau khi login)
 // ====================
@@ -170,6 +245,9 @@ function Dashboard() {
   return h("div", { style: { padding: "2rem", textAlign: "center" } },
     h("h1", null, "Dashboard"),
     h("p", null, user ? `Xin chào ${user.email}` : "Đang tải..."),
+
+    h(ChangePassword), // 👈 gắn tại đây
+
     h("button", {
       onClick: handleSignOut,
       style: { padding: "0.5rem 1rem", marginTop: "1rem" }
