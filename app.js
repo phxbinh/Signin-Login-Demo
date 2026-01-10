@@ -324,7 +324,7 @@ function Dashboard() {
       style: { padding: "0.5rem 1rem", marginTop: "1rem" }
     }, "Đăng xuất"),
     h("br"), h("br"),
-    h(Link, { to: "/auth" }, "Về trang Auth")
+    h(Link, { to: "/auth", children: "Về trang Auth"})
   );
 }
 
@@ -335,9 +335,9 @@ function Home() {
   return h("div", { style: { padding: "2rem", textAlign: "center" } },
     h("h1", null, "Welcome to My App"),
     h("p", null, "Đây là trang chủ"),
-    h(Link, { to: "/auth" }, "Đi đến Đăng nhập / Đăng ký"),
+    h(Link, { to: "/auth", children: "Đi đến Đăng nhập / Đăng ký"}),
     h("br"), h("br"),
-    h(Link, { to: "/dashboard" }, "Dashboard (yêu cầu đăng nhập)")
+    h(Link, { to: "/dashboard", children: "Dashboard (yêu cầu đăng nhập)"})
   );
 }
 
